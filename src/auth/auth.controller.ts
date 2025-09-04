@@ -2,7 +2,6 @@ import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards, Request, Get }
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { AuthService } from "./auth.service";
-import { AuthGuard } from "./guard/auth.guard";
 
 @Controller("auth")
 export class AuthController {

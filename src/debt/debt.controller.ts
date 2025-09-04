@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, UseGuards, Req, Query } from '@nestjs/common';
 import { DebtService } from './debt.service';
 import { CreateDebtDto } from './dto/create-debt.dto';
 import { UpdateDebtDto } from './dto/update-debt.dto';
@@ -15,8 +15,8 @@ export class DebtController {
   }
 
   @Get()
-  findAll(@Req() req) {
-    return this.debtService.findAllByUser(req.user.id);
+  findAll(@Req() req, @Query('status') status: 'all' | 'completed' | 'pending' = 'all') {
+    return this.debtService.findAll(req.user.id, status);
   }
 
   @Get('summary')
@@ -37,11 +37,6 @@ export class DebtController {
   @Patch(':id/pay')
   markAsPaid(@Param('id') id: number, @Req() req) {
     return this.debtService.markAsPaid(id, req.user.id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: number, @Req() req) {
-    return this.debtService.remove(id, req.user.id);
   }
 
   @Get('export/:format')
