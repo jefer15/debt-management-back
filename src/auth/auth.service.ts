@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { RegisterDto } from "./dto/register.dto";
-
 import { JwtService } from "@nestjs/jwt";
 import * as bcryptjs from "bcryptjs";
 import { UserService } from "src/user/user.service";
@@ -49,7 +48,7 @@ export class AuthService {
       throw new UnauthorizedException("Invalid password");
     }
 
-    const payload = { email: user.email };
+    const payload = { sub: user.id, email: user.email };
 
     const token = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET,
@@ -58,6 +57,7 @@ export class AuthService {
     return {
       token: token,
       email: user.email,
+      user: user.name,
     };
   }
 }

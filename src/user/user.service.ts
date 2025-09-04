@@ -10,13 +10,16 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
-  ) {}
+  ) { }
   async create(createUserDto: CreateUserDto) {
     return await this.userRepository.save(createUserDto);
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+  async findOneByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: { email },
+      select: ['id', 'name', 'email', 'password']
+    });
   }
 
   async findOneById(id: number): Promise<User | null> {

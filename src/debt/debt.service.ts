@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Debt } from './entities/debt.entity';
 import { CreateDebtDto } from './dto/create-debt.dto';
 import { UpdateDebtDto } from './dto/update-debt.dto';
-import { User } from '../user/entities/user.entity';
 import { Parser } from 'json2csv';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -17,14 +16,14 @@ export class DebtService {
     private cacheManager: Cache,
   ) { }
 
-  async create(createDebtDto: CreateDebtDto, user: User) {
+  async create(createDebtDto: CreateDebtDto, userLogged: any) {
     if (createDebtDto.amount <= 0) {
       throw new BadRequestException('El valor de la deuda debe ser mayor a 0');
     }
-    const debt = this.debtRepo.create({ ...createDebtDto, user });
+    const debt = this.debtRepo.create({ ...createDebtDto, user: {id: userLogged} });
     const savedDebt = await this.debtRepo.save(debt);
 
-    await this.invalidateUserCache(user.id);
+    await this.invalidateUserCache(userLogged);
 
     return savedDebt;
   }
@@ -42,7 +41,6 @@ export class DebtService {
       } else if (status === 'pending') {
         where.paid = false;
       }
-      // 👆 si es "all", no le agregamos filtro a paid
 
       debts = await this.debtRepo.find({
         where,
@@ -110,6 +108,12 @@ export class DebtService {
     await this.cacheManager.del(`debt_${id}_user_${userId}`);
 
     return updatedDebt;
+  }
+
+  async remove(id: number, userId: number) {
+    const debt = await this.findOne(id, userId);
+    await this.debtRepo.remove(debt);
+    await this.invalidateUserCache(userId);
   }
 
   async exportDebts(userId: number, format: 'json' | 'csv') {
