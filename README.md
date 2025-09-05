@@ -97,12 +97,6 @@ Ejecutar los tests unitarios:
 ```bash
 npm run test
 ```
-
-Ejecutar con cobertura:
-```bash
-npm run test:cov
-```
-
 ---
 
 ## Decisiones técnicas
