@@ -1,98 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Debt Management Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este es el backend del sistema de **Gestión de Deudas**, desarrollado con **NestJS**, **PostgreSQL**, **Redis** y autenticación con **JWT**.  
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tecnologías principales
+- **NestJS v11**
+- **TypeORM v0.3**
+- **PostgreSQL v15**
+- **Redis v7**
+- **JWT para autenticación**
+- **Docker Compose para orquestación de servicios**
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+## Estructura del proyecto
+```
+src/
+ ├── auth/          # Módulo de autenticación (login, registro, JWT, guard)
+ │   ├── dto/
+ │   └── guard/
+ │
+ ├── debt/          # Módulo de deudas (CRUD, exportación, resumen)
+ │   ├── dto/
+ │   └── entities/
+ │
+ ├── user/          # Módulo de usuarios
+ │   ├── dto/
+ │   └── entities/
+ │
+ ├── app.module.ts  # Configuración principal (DB, Redis, módulos)
+ └── main.ts
 ```
 
-## Compile and run the project
+---
 
+## ⚙️ Configuración del entorno
+
+En la raíz del proyecto hay un archivo **`.env copy`** de ejemplo para variables de entorno.  
+
+---
+
+## Levantar base de datos y Redis con Docker
+
+Ejecuta:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker-compose up -d
 ```
 
-## Run tests
+Esto levantará:
+- **Postgres** en `localhost:5432`
+- **Redis** en `localhost:6379`
 
+Para verificar:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker ps
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+Instalar dependencias:
 ```bash
-$ npm install -g mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Ejecutar en modo desarrollo:
+```bash
+npm run start:dev
+```
 
-## Resources
+Compilar y ejecutar en producción:
+```bash
+npm run build
+npm run start:prod
+```
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## Endpoints principales
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Autenticación
+- **POST** `/auth/register` → Registro de usuario  
+- **POST** `/auth` → Login (devuelve JWT)
 
-## Support
+### Deudas
+- **POST** `/debt` → Crear deuda  
+- **GET** `/debt` → Listar deudas (`?status=all|completed|pending`)  
+- **GET** `/debt/summary` → Resumen de deudas  
+- **GET** `/debt/:id` → Obtener una deuda por ID  
+- **PUT** `/debt/:id` → Actualizar deuda  
+- **PATCH** `/debt/:id/pay` → Marcar deuda como pagada  
+- **DELETE** `/debt/:id` → Eliminar deuda  
+- **GET** `/debt/export/:format` → Exportar deudas (`json` o `csv`)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## Tests
+Ejecutar los tests unitarios:
+```bash
+npm run test
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Ejecutar con cobertura:
+```bash
+npm run test:cov
+```
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Decisiones técnicas
+
+- **TypeORM + PostgreSQL**: flexibilidad para mapear entidades y relaciones en una base de datos relacional confiable.
+
+- **JWT con Passport**: autenticación segura y escalable.
+
+- **bcryptjs**: contraseñas encriptadas antes de ser almacenadas.
+
+- **Redis como caché**: mejora de rendimiento en consultas frecuentes (ej. listados de deudas).
+
+- **Arquitectura modular**: separación clara entre auth, debt y user.
+
+- **DTOs y validaciones**: garantizan integridad de datos y evitan inconsistencias.
+
+- **Exportación CSV/JSON**: funcionalidad adicional para integraciones o reportes.
